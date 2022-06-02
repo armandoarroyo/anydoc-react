@@ -3,10 +3,10 @@ const authApiUrl =
   "https://pad2zt6ubf.execute-api.us-east-1.amazonaws.com/Prod";
 
 export async function authHeader() {
-  const user = localStorage.getItem("user");
-  if (user && localStorage.token) {
+  const user = sessionStorage.getItem("user");
+  if (user && sessionStorage.token) {
     return {
-      Authorization: "Bearer " + localStorage.token,
+      Authorization: "Bearer " + sessionStorage.token,
     };
   } else {
     return {};
@@ -19,14 +19,14 @@ export async function changeInformation(phoneCode, phoneNumber) {
     PhoneNumber: phoneNumber,
   };
   const headers = {
-    Authorization: "Bearer " + localStorage.token,
+    Authorization: "Bearer " + sessionStorage.token,
   };
   return await axios
     .put(url, body, { headers })
     .then(function (response) {
       if (response.status === 200) {
-        localStorage.setItem("countryCode", phoneCode);
-        localStorage.setItem("phone", phoneNumber);
+        sessionStorage.setItem("countryCode", phoneCode);
+        sessionStorage.setItem("phone", phoneNumber);
       }
       return response;
     })
@@ -36,17 +36,17 @@ export async function changeInformation(phoneCode, phoneNumber) {
 }
 
 export async function userInformation() {
-  const user = localStorage.getItem("user");
-  if (user && localStorage.token) {
+  const user = sessionStorage.getItem("user");
+  if (user && sessionStorage.token) {
     return {
-      names: localStorage.names,
-      surNames: localStorage.surNames,
-      email: localStorage.email,
-      countryCode: localStorage.countryCode,
-      phone: localStorage.phone,
-      CompanyId: localStorage.CompanyId,
-      company: localStorage.company,
-      roleCompanyName: localStorage.roleCompanyName,
+      names: sessionStorage.names,
+      surNames: sessionStorage.surNames,
+      email: sessionStorage.email,
+      countryCode: sessionStorage.countryCode,
+      phone: sessionStorage.phone,
+      CompanyId: sessionStorage.CompanyId,
+      company: sessionStorage.company,
+      roleCompanyName: sessionStorage.roleCompanyName,
       //display wizard
     };
   } else {

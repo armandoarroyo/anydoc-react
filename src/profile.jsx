@@ -19,7 +19,7 @@ const options = CountryCodes();
 function Profile() {
   let navigate = useNavigate();
   const [countryCode, setCountryCode] = React.useState("");
-  const [phone, setPhone] = React.useState(localStorage.phone);
+  const [phone, setPhone] = React.useState(sessionStorage.phone);
 
   const handleCountryChange = (event) => setCountryCode(event.target.value);
   const handlePhoneChange = (event) => setPhone(event.target.value);
@@ -68,7 +68,7 @@ function Profile() {
                     required
                     id="outlined-required"
                     label="First Name"
-                    defaultValue={localStorage.names}
+                    defaultValue={sessionStorage.names}
                     color="info"
                   />{" "}
                 </FormControl>
@@ -79,7 +79,7 @@ function Profile() {
                     required
                     id="outlined-required"
                     label="Last Name"
-                    defaultValue={localStorage.surNames}
+                    defaultValue={sessionStorage.surNames}
                     color="info"
                   />{" "}
                 </FormControl>
@@ -133,7 +133,7 @@ function Profile() {
                     required
                     id="outlined-required"
                     label="Company"
-                    defaultValue={localStorage.company}
+                    defaultValue={sessionStorage.company}
                     color="info"
                   />
                 </FormControl>
@@ -145,7 +145,7 @@ function Profile() {
                     required
                     id="outlined-required"
                     label="Role"
-                    defaultValue={localStorage.roleCompanyName}
+                    defaultValue={sessionStorage.roleCompanyName}
                   />
                 </FormControl>
               </Grid>
@@ -157,7 +157,7 @@ function Profile() {
                     disabled
                     id="outlined-required"
                     label="Email"
-                    defaultValue={localStorage.email}
+                    defaultValue={sessionStorage.email}
                     color="info"
                   />
                 </FormControl>

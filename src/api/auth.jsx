@@ -12,8 +12,8 @@ export async function login(user, pass) {
     })
     .then(function (response) {
       if (response.status === 200) {
-        localStorage.setItem("user", user);
-        localStorage.setItem("pass", pass);
+        sessionStorage.setItem("user", user);
+        sessionStorage.setItem("pass", pass);
         sms();
       }
       return response;
@@ -26,7 +26,7 @@ export async function login(user, pass) {
 export async function sms() {
   return await axios
     .post(authApiUrl + "/api/Auth/SMS", {
-      UserName: localStorage.user,
+      UserName: sessionStorage.user,
     })
     .then(function (response) {
       return response;
@@ -40,13 +40,13 @@ export async function verifyCodeSMS(code) {
   return await axios
     .post(authApiUrl + "/api/Auth/VerifyCodeSMS", {
       code: code,
-      userName: localStorage.user,
-      password: localStorage.pass,
+      userName: sessionStorage.user,
+      password: sessionStorage.pass,
     })
     .then(function (response) {
       if (response.status === 200) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("access_token", response.data.access_Token);
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("access_token", response.data.access_Token);
       }
       return response;
     })
@@ -59,21 +59,24 @@ export async function getUserInfo() {
   return await axios
     .get(authApiUrl + "/api/General/UserInfo", {
       headers: {
-        Authorization: "Bearer " + localStorage.token,
+        Authorization: "Bearer " + sessionStorage.token,
       },
     })
     .then(function (response) {
       if (response.status === 200) {
-        localStorage.setItem("names", response.data.names);
-        localStorage.setItem("surNames", response.data.surNames);
-        localStorage.setItem("UserName", response.data.userName);
-        localStorage.setItem("email", response.data.email);
-        localStorage.setItem("countryCode", response.data.countryCode);
-        localStorage.setItem("phone", response.data.phone);
-        localStorage.setItem("companyId", response.data.companyId);
-        localStorage.setItem("company", response.data.company);
-        localStorage.setItem("roleCompanyName", response.data.roleCompanyName);
-        localStorage.setItem("displayWizard", response.data.displayWizard);
+        sessionStorage.setItem("names", response.data.names);
+        sessionStorage.setItem("surNames", response.data.surNames);
+        sessionStorage.setItem("UserName", response.data.userName);
+        sessionStorage.setItem("email", response.data.email);
+        sessionStorage.setItem("countryCode", response.data.countryCode);
+        sessionStorage.setItem("phone", response.data.phone);
+        sessionStorage.setItem("companyId", response.data.companyId);
+        sessionStorage.setItem("company", response.data.company);
+        sessionStorage.setItem(
+          "roleCompanyName",
+          response.data.roleCompanyName
+        );
+        sessionStorage.setItem("displayWizard", response.data.displayWizard);
       }
       return response;
     })
@@ -83,5 +86,5 @@ export async function getUserInfo() {
 }
 
 export async function logout() {
-  localStorage.clear();
+  sessionStorage.clear();
 }

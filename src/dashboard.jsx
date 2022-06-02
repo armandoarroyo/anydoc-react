@@ -11,7 +11,7 @@ class dashboard extends Component {
   }
 
   render() {
-    return <h1>DASHBOARD {localStorage.names}</h1>;
+    return <h1>DASHBOARD {sessionStorage.names}</h1>;
   }
 }
 

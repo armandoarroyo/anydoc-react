@@ -68,13 +68,13 @@ export default function MenuAppBar() {
     >
       <List sx={{ bgcolor: "secondary.main", color: "white", padding: 5 }}>
         <ListItemText style={{ display: "flex", justifyContent: "center" }}>
-          {localStorage.names}
+          {sessionStorage.names}
         </ListItemText>
         <ListItemText style={{ display: "flex", justifyContent: "center" }}>
-          {localStorage.email}
+          {sessionStorage.email}
         </ListItemText>
         <ListItemText style={{ display: "flex", justifyContent: "center" }}>
-          {localStorage.company}
+          {sessionStorage.company}
         </ListItemText>
       </List>
       <Divider />

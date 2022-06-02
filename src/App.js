@@ -11,7 +11,7 @@ import customTheme from "./customTheme";
 function App() {
   let theme = customTheme();
 
-  if (!localStorage.token) {
+  if (!sessionStorage.token) {
     return <Login />;
   }
   return (
