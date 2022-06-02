@@ -83,5 +83,5 @@ export async function getUserInfo() {
 }
 
 export async function logout() {
-  localStorage.removeItem("user");
+  localStorage.clear();
 }
