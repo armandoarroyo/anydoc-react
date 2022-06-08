@@ -1,22 +1,110 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { Button } from "@mui/material";
+import { Button, Typography, Snackbar } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import FormControl from "@mui/material/FormControl";
+import CircularProgress from "@mui/material/CircularProgress";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
 function ChangePassword() {
-  const [password, setPassword] = React.useState("");
+  const [disableButton, setDisableButton] = useState(true);
+  const [loading, setLoading] = useState("none");
+  const [password, setPassword] = useState("");
+  const [validPassword, setValidPassword] = useState(false);
+  const [passwordHelperText, setPasswordHelperText] =
+    useState("Password required");
+
+  const [validNewPassword, setValidNewPassword] = useState(false);
+  const [newPasswordHelperText, setNewPasswordHelperText] =
+    useState("Password required");
   const [newPassword, setNewPassword] = React.useState("");
+
   const [reNewPassword, setReNewPassword] = React.useState("");
+  const [validReNewPassword, setValidReNewPassword] = useState(false);
+  const [reNewPasswordHelperText, setReNewPasswordHelperText] = useState(
+    "Passwords must match"
+  );
 
-  const handlePasswordChange = (event) => setPassword(event.target.value);
-  const handleNewPasswordChange = (event) => setNewPassword(event.target.value);
-  const handleReNewPasswordChange = (event) =>
-    setReNewPassword(event.target.value);
+  const [openSnack, setOpenSnack] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [disableInput, setDisableInput] = useState(false);
+  const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}/;
 
-  function handleClick() {
-    console.log("hurray");
+  const handleCloseSnack = () => {
+    setOpenSnack(false);
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  useEffect(() => {
+    if (validPassword && validNewPassword && validReNewPassword) {
+      setDisableButton(false);
+    } else {
+      setDisableButton(true);
+    }
+  }, [validPassword, validNewPassword, validReNewPassword]);
+
+  useEffect(() => {
+    if (password.length > 1 && password == sessionStorage.pass) {
+      setValidPassword(true);
+      setPasswordHelperText("");
+    } else {
+      if (password.length < 1) {
+        setValidPassword(false);
+        setPasswordHelperText("Password required");
+      } else {
+        setValidPassword(false);
+        setPasswordHelperText("Invalid password");
+      }
+    }
+  }, [password]);
+
+  useEffect(() => {
+    if (passwordRegex.test(newPassword) && newPassword.length > 1) {
+      setValidNewPassword(true);
+      setNewPasswordHelperText("");
+    } else {
+      if (newPassword.length < 1) {
+        setValidNewPassword(false);
+        setNewPasswordHelperText("New password required");
+      } else {
+        setValidNewPassword(false);
+        setNewPasswordHelperText("Invalid password");
+      }
+    }
+  }, [newPassword]);
+
+  useEffect(() => {
+    if (reNewPassword == newPassword && reNewPassword.length > 1) {
+      setValidReNewPassword(true);
+      setReNewPasswordHelperText("");
+    } else {
+      setValidReNewPassword(false);
+      setReNewPasswordHelperText("Passwords must match");
+    }
+  }, [reNewPassword]);
+
+  async function handleClick() {
+    setLoading("block");
+    setDisableButton(true);
+    setDisableInput(true);
+
+    setLoading("none");
+    setDisableButton(false);
+    setDisableInput(false);
+    setOpenSnack(true);
   }
 
   return (
@@ -39,52 +127,116 @@ function ChangePassword() {
             <Grid
               container
               spacing={4}
-              alignItems="center"
-              justifyContent="center"
-              style={{ maxWidth: "300px" }}
+              direction="column"
+              style={{ maxWidth: "500px" }}
             >
               <Grid item xs={12}>
-                <h3>Change your password: </h3>
+                <h3 style={{ textAlign: "center" }}>Change your password </h3>
+                <Typography variant="caption" display="block">
+                  At least one digit [0-9]
+                </Typography>
+                <Typography variant="caption" display="block">
+                  At least one lowercase character [a-z]
+                </Typography>
+                <Typography variant="caption" display="block">
+                  At least one uppercase character [A-Z]
+                </Typography>
+                <Typography variant="caption" display="block">
+                  At least 8 characters
+                </Typography>
               </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
+              <Grid item xs={12} alignItems="center" justifyContent="center">
+                <FormControl>
                   <TextField
-                    required
-                    id="outlined-required"
-                    label="Current Password"
+                    style={{ width: 300 }}
                     color="info"
-                    type="password"
-                    value={password}
-                    onChange={handlePasswordChange}
+                    required
+                    id="old-password-field"
+                    label="Old Password"
+                    variant="outlined"
+                    type={showPassword ? "text" : "password"}
+                    onChange={(e) => setPassword(e.target.value)}
+                    error={!validPassword}
+                    helperText={passwordHelperText}
+                    disabled={disableInput}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} alignItems="center" justifyContent="center">
                 <FormControl fullWidth>
                   <TextField
-                    fullWidth
-                    required
-                    type="password"
-                    id="outlined-required"
-                    label="New Password"
-                    value={newPassword}
+                    style={{ width: 300 }}
                     color="info"
-                    onChange={handleNewPasswordChange}
+                    required
+                    id="new-password-field"
+                    label="New Password"
+                    variant="outlined"
+                    type={showPassword ? "text" : "password"}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    error={!validNewPassword}
+                    helperText={newPasswordHelperText}
+                    disabled={disableInput}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      maxLength: 16,
+                    }}
                   />
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} alignItems="center" justifyContent="center">
                 <FormControl fullWidth>
                   <TextField
-                    fullWidth
-                    required
-                    type="password"
-                    id="outlined-required"
-                    label="Repeat New Password"
-                    value={reNewPassword}
+                    style={{ width: 300 }}
                     color="info"
-                    onChange={handleReNewPasswordChange}
+                    required
+                    id="repeat-new-password-field"
+                    label="Repeat New Password"
+                    variant="outlined"
+                    type={showPassword ? "text" : "password"}
+                    onChange={(e) => setReNewPassword(e.target.value)}
+                    error={!validReNewPassword}
+                    helperText={reNewPasswordHelperText}
+                    disabled={disableInput}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </FormControl>
               </Grid>
@@ -94,9 +246,28 @@ function ChangePassword() {
                   variant="contained"
                   onClick={handleClick}
                   color="secondary"
+                  disabled={disableButton}
                 >
                   <SaveIcon sx={{ mr: 2 }}></SaveIcon> Save
                 </Button>
+              </Grid>
+              <Grid
+                justify="center"
+                item
+                sx={{
+                  display: loading,
+                }}
+              >
+                <CircularProgress color="secondary" />
+              </Grid>
+              <Grid>
+                <Snackbar
+                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                  open={openSnack}
+                  onClose={handleCloseSnack}
+                  message="Password updated successfully."
+                  autoHideDuration={3000}
+                />
               </Grid>
             </Grid>
           </div>
