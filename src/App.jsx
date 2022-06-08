@@ -7,7 +7,7 @@ import NavBar from "./navbar";
 import { ThemeProvider } from "@mui/material/styles";
 import Login from "./login";
 import customTheme from "./customTheme";
-
+import MainButton from "./mainButton";
 function App() {
   let theme = customTheme();
 
@@ -16,8 +16,15 @@ function App() {
   }
   return (
     <ThemeProvider theme={theme}>
-      <NavBar />
-      <Outlet />
+      <nav>
+        <NavBar />
+      </nav>
+      <body>
+        <Outlet />
+      </body>
+      <div className="main-btn">
+        <MainButton />
+      </div>
     </ThemeProvider>
   );
 }
