@@ -12,6 +12,26 @@ export async function authHeader() {
     return {};
   }
 }
+
+export async function userInformation() {
+  const user = sessionStorage.getItem("user");
+  if (user && sessionStorage.token) {
+    return {
+      names: sessionStorage.names,
+      surNames: sessionStorage.surNames,
+      email: sessionStorage.email,
+      countryCode: sessionStorage.countryCode,
+      phone: sessionStorage.phone,
+      CompanyId: sessionStorage.CompanyId,
+      company: sessionStorage.company,
+      roleCompanyName: sessionStorage.roleCompanyName,
+      //display wizard
+    };
+  } else {
+    return {};
+  }
+}
+
 export async function changeInformation(phoneCode, phoneNumber) {
   const url = authApiUrl + "/api/General/ChangeInformation";
   const body = {
@@ -35,21 +55,62 @@ export async function changeInformation(phoneCode, phoneNumber) {
     });
 }
 
-export async function userInformation() {
-  const user = sessionStorage.getItem("user");
-  if (user && sessionStorage.token) {
-    return {
-      names: sessionStorage.names,
-      surNames: sessionStorage.surNames,
-      email: sessionStorage.email,
-      countryCode: sessionStorage.countryCode,
-      phone: sessionStorage.phone,
-      CompanyId: sessionStorage.CompanyId,
-      company: sessionStorage.company,
-      roleCompanyName: sessionStorage.roleCompanyName,
-      //display wizard
-    };
-  } else {
-    return {};
-  }
+export async function AllowedUploadExtensionFile() {
+  const url = authApiUrl + "/api/General/AllowedUploadExtensionFile";
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.token,
+  };
+  return await axios
+    .get(url, { headers })
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error;
+    });
+}
+
+export async function GetDocuments() {
+  const url = authApiUrl + "api/Document/GetDocuments";
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.token,
+  };
+  return await axios
+    .get(url, { headers })
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error;
+    });
+}
+
+export async function GetDocumentsCompleted() {
+  const url = authApiUrl + "api/Document/GetDocumentsCompleted";
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.token,
+  };
+  return await axios
+    .get(url, { headers })
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error;
+    });
+}
+
+export async function GetDocumentsPending() {
+  const url = authApiUrl + "api/Document/GetDocumentsPending";
+  const headers = {
+    Authorization: "Bearer " + sessionStorage.token,
+  };
+  return await axios
+    .get(url, { headers })
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error;
+    });
 }
