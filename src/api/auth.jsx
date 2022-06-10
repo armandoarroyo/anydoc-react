@@ -135,7 +135,7 @@ export async function changePassword(oldPassword, password, confirmPassword) {
       },
     })
     .then(function (response) {
-      if (response.status == 200) {
+      if (response.status === 200) {
         sessionStorage.setItem("pass", password);
       }
       return response;

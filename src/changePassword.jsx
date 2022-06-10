@@ -59,7 +59,7 @@ function ChangePassword() {
   }, [validPassword, validNewPassword, validReNewPassword]);
 
   useEffect(() => {
-    if (password.length > 1 && password == sessionStorage.pass) {
+    if (password.length > 1 && password === sessionStorage.pass) {
       setValidPassword(true);
       setPasswordHelperText("");
     } else {
@@ -89,7 +89,7 @@ function ChangePassword() {
   }, [newPassword]);
 
   useEffect(() => {
-    if (reNewPassword == newPassword && reNewPassword.length > 1) {
+    if (reNewPassword === newPassword && reNewPassword.length > 1) {
       setValidReNewPassword(true);
       setReNewPasswordHelperText("");
     } else {

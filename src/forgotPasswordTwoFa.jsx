@@ -101,7 +101,7 @@ function ForgotPasswordTwoFa() {
   }, [newPassword]);
 
   useEffect(() => {
-    if (reNewPassword == newPassword && reNewPassword.length > 1) {
+    if (reNewPassword === newPassword && reNewPassword.length > 1) {
       setValidReNewPassword(true);
       setReNewPasswordHelperText("");
     } else {
