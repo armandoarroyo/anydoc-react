@@ -1,5 +1,6 @@
 body {
-  background-color: #e5e5ea;
+  --background-color: #e5e5ea;
+  background-color: #fff;
   font-family: "Roboto Condensed";
 }
 .main-btn {

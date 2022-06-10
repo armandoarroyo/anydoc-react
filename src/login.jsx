@@ -40,6 +40,11 @@ function Login() {
     event.preventDefault();
   };
 
+  const handleForgotClick = (event) => {
+    event.preventDefault();
+    navigate("/forgotPassword");
+  };
+
   let navigate = useNavigate();
   let theme = customTheme();
 
@@ -59,7 +64,6 @@ function Login() {
   }, [email]);
 
   useEffect(() => {
-    console.log(password);
     if (password.length > 5) {
       setValidPassword(true);
       setPasswordHelperText("");
@@ -172,7 +176,7 @@ function Login() {
           </Grid>
 
           <Grid item>
-            <Button variant="outlined" color="info">
+            <Button variant="outlined" color="info" onClick={handleForgotClick}>
               Forgot Password?
             </Button>
           </Grid>

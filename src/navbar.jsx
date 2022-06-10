@@ -61,6 +61,7 @@ export default function MenuAppBar() {
 
   const list = (anchor) => (
     <Box
+      elevation={0}
       sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
@@ -121,7 +122,7 @@ export default function MenuAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" elevation={0}>
         <Toolbar>
           <IconButton
             size="large"
@@ -184,7 +185,7 @@ export default function MenuAppBar() {
         </Toolbar>
       </AppBar>
       <div>
-        <Drawer open={open} onClose={() => setOpen(false)}>
+        <Drawer open={open} onClose={() => setOpen(false)} elevation={0}>
           {list("left")}
         </Drawer>
       </div>

@@ -14,7 +14,7 @@ function Twofa() {
   let navigate = useNavigate();
   const [code, setCode] = useState("");
   const [validCode, setValidCode] = useState(false);
-  const [codeHelperText, setCodeHelperText] = useState("Email required");
+  const [codeHelperText, setCodeHelperText] = useState("Six digit required");
   const [loading, setLoading] = useState("none");
   const [disableButton, setDisableButton] = useState(true);
   const [disableInput, setDisableInput] = useState(false);

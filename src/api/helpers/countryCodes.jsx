@@ -190,11 +190,7 @@ function CountryCodes() {
       dial_code: "+237",
       code: "CM",
     },
-    {
-      name: "Canada",
-      dial_code: "+1",
-      code: "CA",
-    },
+
     {
       name: "Cape Verde",
       dial_code: "+238",

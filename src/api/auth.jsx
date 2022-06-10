@@ -1,3 +1,4 @@
+import { CollectionsOutlined } from "@mui/icons-material";
 import axios from "axios";
 import { authHeader } from "./localServices";
 
@@ -76,12 +77,71 @@ export async function getUserInfo() {
           "roleCompanyName",
           response.data.roleCompanyName
         );
-        sessionStorage.setItem("displayWizard", response.data.displayWizard);
+        sessionStorage.setItem("welcomeMessage", response.data.welcomeMessage);
       }
       return response;
     })
     .catch(function (error) {
       return error;
+    });
+}
+
+export async function forgotPassword(userName) {
+  return await axios
+    .post(authApiUrl + "/api/Auth/ForgotPassword", {
+      UserName: userName,
+    })
+    .then(function (response) {
+      if (response.status === 200) {
+        sessionStorage.setItem("UserName", userName);
+      }
+
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
+    });
+}
+
+export async function resetPasswordWithCode(newPassword, code) {
+  const body = {
+    UserName: sessionStorage.UserName,
+    NewPassword: newPassword,
+    ConfirmationCode: code,
+  };
+  return await axios
+    .post(authApiUrl + "/api/Auth/ResetPasswordWithConfirmationCode", body, {})
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
+    });
+}
+
+export async function changePassword(oldPassword, password, confirmPassword) {
+  const token = sessionStorage.token;
+  const access_token = sessionStorage.access_token;
+  const body = {
+    OldPassword: oldPassword,
+    Password: password,
+    ConfirmPassword: confirmPassword,
+    Token: access_token,
+  };
+  return await axios
+    .post(authApiUrl + "/api/Auth/ChangePassword", body, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+    .then(function (response) {
+      if (response.status == 200) {
+        sessionStorage.setItem("pass", password);
+      }
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
     });
 }
 

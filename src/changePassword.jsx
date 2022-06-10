@@ -11,6 +11,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { changePassword } from "./api/auth";
 
 function ChangePassword() {
   const [disableButton, setDisableButton] = useState(true);
@@ -35,6 +36,7 @@ function ChangePassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
   const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}/;
+  const [snackMessage, setSnackMessage] = useState("");
 
   const handleCloseSnack = () => {
     setOpenSnack(false);
@@ -94,17 +96,32 @@ function ChangePassword() {
       setValidReNewPassword(false);
       setReNewPasswordHelperText("Passwords must match");
     }
-  }, [reNewPassword]);
+  }, [reNewPassword, newPassword]);
 
   async function handleClick() {
     setLoading("block");
     setDisableButton(true);
     setDisableInput(true);
+    const correctPasswordUpdate = await changePassword(
+      password,
+      newPassword,
+      reNewPassword
+    );
 
-    setLoading("none");
-    setDisableButton(false);
-    setDisableInput(false);
-    setOpenSnack(true);
+    if (correctPasswordUpdate.status === 200) {
+      console.log(correctPasswordUpdate.status);
+      setSnackMessage("Password updated succesfully.");
+      setOpenSnack(true);
+      setLoading("none");
+      setDisableButton(false);
+      setDisableInput(false);
+    } else {
+      setSnackMessage("Could not update password. Review and try again.");
+      setLoading("none");
+      setDisableButton(false);
+      setDisableInput(false);
+      setOpenSnack(true);
+    }
   }
 
   return (
@@ -123,154 +140,153 @@ function ChangePassword() {
           noValidate
           autoComplete="off"
         >
-          <div>
-            <Grid
-              container
-              spacing={4}
-              direction="column"
-              style={{ maxWidth: "500px" }}
-            >
-              <Grid item xs={12}>
-                <h3 style={{ textAlign: "center" }}>Change your password </h3>
-                <Typography variant="caption" display="block">
-                  At least one digit [0-9]
-                </Typography>
-                <Typography variant="caption" display="block">
-                  At least one lowercase character [a-z]
-                </Typography>
-                <Typography variant="caption" display="block">
-                  At least one uppercase character [A-Z]
-                </Typography>
-                <Typography variant="caption" display="block">
-                  At least 8 characters
-                </Typography>
-              </Grid>
-              <Grid item xs={12} alignItems="center" justifyContent="center">
-                <FormControl>
-                  <TextField
-                    style={{ width: 300 }}
-                    color="info"
-                    required
-                    id="old-password-field"
-                    label="Old Password"
-                    variant="outlined"
-                    type={showPassword ? "text" : "password"}
-                    onChange={(e) => setPassword(e.target.value)}
-                    error={!validPassword}
-                    helperText={passwordHelperText}
-                    disabled={disableInput}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} alignItems="center" justifyContent="center">
-                <FormControl fullWidth>
-                  <TextField
-                    style={{ width: 300 }}
-                    color="info"
-                    required
-                    id="new-password-field"
-                    label="New Password"
-                    variant="outlined"
-                    type={showPassword ? "text" : "password"}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    error={!validNewPassword}
-                    helperText={newPasswordHelperText}
-                    disabled={disableInput}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                      maxLength: 16,
-                    }}
-                  />
-                </FormControl>
-              </Grid>
+          <Grid
+            container
+            spacing={4}
+            direction="column"
+            style={{ maxWidth: "500px" }}
+          >
+            <Grid item xs={12}>
+              <h3 style={{ textAlign: "center" }}>Change your password </h3>
 
-              <Grid item xs={12} alignItems="center" justifyContent="center">
-                <FormControl fullWidth>
-                  <TextField
-                    style={{ width: 300 }}
-                    color="info"
-                    required
-                    id="repeat-new-password-field"
-                    label="Repeat New Password"
-                    variant="outlined"
-                    type={showPassword ? "text" : "password"}
-                    onChange={(e) => setReNewPassword(e.target.value)}
-                    error={!validReNewPassword}
-                    helperText={reNewPasswordHelperText}
-                    disabled={disableInput}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} textAlign="center">
-                <Button
-                  variant="contained"
-                  onClick={handleClick}
-                  color="secondary"
-                  disabled={disableButton}
-                >
-                  <SaveIcon sx={{ mr: 2 }}></SaveIcon> Save
-                </Button>
-              </Grid>
-              <Grid
-                justify="center"
-                item
-                sx={{
-                  display: loading,
-                }}
-              >
-                <CircularProgress color="secondary" />
-              </Grid>
-              <Grid>
-                <Snackbar
-                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                  open={openSnack}
-                  onClose={handleCloseSnack}
-                  message="Password updated successfully."
-                  autoHideDuration={3000}
-                />
-              </Grid>
+              <Typography variant="caption" display="block">
+                At least one digit [0-9]
+              </Typography>
+              <Typography variant="caption" display="block">
+                At least one lowercase character [a-z]
+              </Typography>
+              <Typography variant="caption" display="block">
+                At least one uppercase character [A-Z]
+              </Typography>
+              <Typography variant="caption" display="block">
+                At least 8 characters
+              </Typography>
             </Grid>
-          </div>
+            <Grid item xs={12} alignItems="center" justifyContent="center">
+              <FormControl>
+                <TextField
+                  style={{ width: 300 }}
+                  color="info"
+                  required
+                  id="old-password-field"
+                  label="Old Password"
+                  variant="outlined"
+                  type={showPassword ? "text" : "password"}
+                  onChange={(e) => setPassword(e.target.value)}
+                  error={!validPassword}
+                  helperText={passwordHelperText}
+                  disabled={disableInput}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} alignItems="center" justifyContent="center">
+              <FormControl fullWidth>
+                <TextField
+                  style={{ width: 300 }}
+                  color="info"
+                  required
+                  id="new-password-field"
+                  label="New Password"
+                  variant="outlined"
+                  type={showPassword ? "text" : "password"}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  error={!validNewPassword}
+                  helperText={newPasswordHelperText}
+                  disabled={disableInput}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                    maxLength: 16,
+                  }}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} alignItems="center" justifyContent="center">
+              <FormControl fullWidth>
+                <TextField
+                  style={{ width: 300 }}
+                  color="info"
+                  required
+                  id="repeat-new-password-field"
+                  label="Repeat New Password"
+                  variant="outlined"
+                  type={showPassword ? "text" : "password"}
+                  onChange={(e) => setReNewPassword(e.target.value)}
+                  error={!validReNewPassword}
+                  helperText={reNewPasswordHelperText}
+                  disabled={disableInput}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} textAlign="center">
+              <Button
+                variant="contained"
+                onClick={handleClick}
+                color="secondary"
+                disabled={disableButton}
+              >
+                <SaveIcon sx={{ mr: 2 }}></SaveIcon> Save
+              </Button>
+            </Grid>
+            <Grid
+              justify="center"
+              item
+              sx={{
+                display: loading,
+              }}
+            >
+              <CircularProgress color="secondary" />
+            </Grid>
+            <Grid>
+              <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                open={openSnack}
+                onClose={handleCloseSnack}
+                message={snackMessage}
+                autoHideDuration={3000}
+              />
+            </Grid>
+          </Grid>
         </Box>
       </Grid>
     </Grid>

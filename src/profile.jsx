@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 
 import Grid from "@mui/material/Grid";
 
@@ -14,24 +14,106 @@ import FormControl from "@mui/material/FormControl";
 import { changeInformation } from "./api/localServices";
 import KeyIcon from "@mui/icons-material/Key";
 import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import { Snackbar } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 const options = CountryCodes();
 
 function Profile() {
   let navigate = useNavigate();
-  const [countryCode, setCountryCode] = React.useState("");
-  const [phone, setPhone] = React.useState(sessionStorage.phone);
-
+  const [countryCode, setCountryCode] = useState(sessionStorage.countryCode);
+  const [phone, setPhone] = useState(sessionStorage.phone);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(
+    sessionStorage.welcomeMessage
+  );
+  const [validPhone, setValidPhone] = useState(true);
+  const [firstName, setFirstName] = useState(sessionStorage.names);
+  const [validFirstName, setValidFirstName] = useState(true);
+  const [lastName, setLastName] = useState(sessionStorage.surNames);
+  const [validLastName, setValidLastName] = useState(true);
+  const [disableButton, setDisableButton] = useState(true);
+  const [openSnack, setOpenSnack] = useState(false);
+  const [loading, setLoading] = useState("none");
   const handleCountryChange = (event) => setCountryCode(event.target.value);
   const handlePhoneChange = (event) => setPhone(event.target.value);
+  const [snackMessage, setSnackMessage] = useState("");
+  const [disableInput, setDisableInput] = useState(false);
+  const [firstNameHelperText, setFirstNameHelperText] = useState("");
+  const [lastNameHelperText, setLastNameHelperText] = useState("");
+  const [phoneHelperText, setPhoneHelperText] = useState("");
 
-  function handleClick() {
-    console.log(countryCode);
-    console.log(phone);
-    const response = changeInformation(countryCode, phone);
-    if (response.status === 200) {
-      console.log("hurray");
+  const handleCloseSnack = () => {
+    setOpenSnack(false);
+  };
+
+  async function handleClick() {
+    setDisableInput(true);
+    setDisableButton(true);
+    setLoading("block");
+
+    const correctUpdate = await changeInformation(
+      firstName,
+      lastName,
+      countryCode,
+      phone
+    );
+    if (correctUpdate.status === 200) {
+      setSnackMessage("Information updated succesfully.");
+      setOpenSnack(true);
+      setLoading("none");
+      setDisableButton(false);
+      setDisableInput(false);
+    } else {
+      setSnackMessage(
+        correctUpdate.data.message ||
+          "Could not update information. Please review and try again."
+      );
+      setLoading("none");
+      setDisableButton(false);
+      setDisableInput(false);
+      setOpenSnack(true);
     }
   }
+
+  useEffect(() => {
+    if (validFirstName && validLastName && validPhone) {
+      setDisableButton(false);
+    } else {
+      setDisableButton(true);
+    }
+  }, [validFirstName, validLastName, validPhone]);
+
+  useEffect(() => {
+    if (firstName.length < 1) {
+      setFirstNameHelperText("Name required");
+      setValidFirstName(false);
+    } else {
+      setValidFirstName(true);
+      setFirstNameHelperText("");
+    }
+  }, [firstName]);
+
+  useEffect(() => {
+    if (lastName.length < 1) {
+      setLastNameHelperText("Last name required");
+      setValidLastName(false);
+    } else {
+      setValidLastName(true);
+      setLastNameHelperText("");
+    }
+  }, [lastName]);
+
+  useEffect(() => {
+    if (phone.length < 1) {
+      setPhoneHelperText("Last name required");
+      setValidPhone(false);
+    } else {
+      setValidPhone(true);
+      setPhoneHelperText("");
+    }
+  }, [phone]);
+
   function handleChangePass() {
     navigate("/change_password");
   }
@@ -54,7 +136,7 @@ function Profile() {
           <div>
             <Grid
               container
-              spacing={4}
+              spacing={8}
               alignItems="center"
               justifyContent="center"
               style={{ maxWidth: "600px" }}
@@ -65,23 +147,41 @@ function Profile() {
               <Grid item xs={6}>
                 <FormControl>
                   <TextField
+                    disabled={disableInput}
                     required
                     id="outlined-required"
                     label="First Name"
-                    defaultValue={sessionStorage.names}
+                    value={firstName}
+                    error={!validFirstName}
+                    helperText={firstNameHelperText}
                     color="info"
-                  />{" "}
+                    onKeyPress={(event) => {
+                      if (!/^[a-zA-Z_ ]*$/.test(event.key)) {
+                        event.preventDefault();
+                      }
+                    }}
+                    onChange={(event) => setFirstName(event.target.value)}
+                  />
                 </FormControl>
               </Grid>
               <Grid item xs={6}>
                 <FormControl>
                   <TextField
+                    disabled={disableInput}
                     required
                     id="outlined-required"
                     label="Last Name"
-                    defaultValue={sessionStorage.surNames}
+                    value={lastName}
+                    error={!validLastName}
+                    helperText={lastNameHelperText}
                     color="info"
-                  />{" "}
+                    onKeyPress={(event) => {
+                      if (!/^[a-zA-Z_ ]*$/.test(event.key)) {
+                        event.preventDefault();
+                      }
+                    }}
+                    onChange={(event) => setLastName(event.target.value)}
+                  />
                 </FormControl>
               </Grid>
               <Grid item xs={6}>
@@ -90,6 +190,7 @@ function Profile() {
                     Country Code
                   </InputLabel>
                   <Select
+                    disabled={disableInput}
                     fullWidth
                     label="Country Code"
                     id="countryCode"
@@ -103,11 +204,8 @@ function Profile() {
                     color="info"
                     sx={{ width: 200 }}
                   >
-                    {options.map((element) => (
-                      <MenuItem
-                        value={element.dial_code}
-                        key={element.dial_code + element.code}
-                      >
+                    {options.map((element, index) => (
+                      <MenuItem value={element.dial_code} key={index}>
                         {element.dial_code} - {element.name}
                       </MenuItem>
                     ))}
@@ -118,11 +216,19 @@ function Profile() {
                 <FormControl>
                   <TextField
                     required
+                    disabled={disableInput}
                     id="outlined-required"
                     label="Phone"
                     value={phone}
+                    error={!validPhone}
                     color="info"
+                    helperText={phoneHelperText}
                     onChange={handlePhoneChange}
+                    onKeyPress={(event) => {
+                      if (!/[0-9]/.test(event.key)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
                 </FormControl>
               </Grid>
@@ -133,7 +239,7 @@ function Profile() {
                     required
                     id="outlined-required"
                     label="Company"
-                    defaultValue={sessionStorage.company}
+                    value={sessionStorage.company}
                     color="info"
                   />
                 </FormControl>
@@ -145,7 +251,7 @@ function Profile() {
                     required
                     id="outlined-required"
                     label="Role"
-                    defaultValue={sessionStorage.roleCompanyName}
+                    value={sessionStorage.roleCompanyName}
                   />
                 </FormControl>
               </Grid>
@@ -157,8 +263,23 @@ function Profile() {
                     disabled
                     id="outlined-required"
                     label="Email"
-                    defaultValue={sessionStorage.email}
+                    value={sessionStorage.email}
                     color="info"
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControl>
+                  <FormControlLabel
+                    label="Show welcome message"
+                    control={
+                      <Checkbox
+                        color="info"
+                        value={showWelcomeMessage}
+                        disabled={disableInput}
+                      />
+                    }
                   />
                 </FormControl>
               </Grid>
@@ -167,6 +288,7 @@ function Profile() {
                   variant="contained"
                   onClick={handleClick}
                   color="secondary"
+                  disabled={disableButton}
                 >
                   <SaveIcon sx={{ mr: 2 }}></SaveIcon> Save
                 </Button>
@@ -179,6 +301,24 @@ function Profile() {
                 >
                   <KeyIcon sx={{ mr: 2 }}></KeyIcon> Change Password
                 </Button>
+              </Grid>
+              <Grid
+                justify="center"
+                item
+                sx={{
+                  display: loading,
+                }}
+              >
+                <CircularProgress color="secondary" />
+              </Grid>
+              <Grid>
+                <Snackbar
+                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                  open={openSnack}
+                  onClose={handleCloseSnack}
+                  message={snackMessage}
+                  autoHideDuration={3000}
+                />
               </Grid>
             </Grid>
           </div>

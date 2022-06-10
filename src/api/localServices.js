@@ -25,6 +25,7 @@ export async function userInformation() {
       CompanyId: sessionStorage.CompanyId,
       company: sessionStorage.company,
       roleCompanyName: sessionStorage.roleCompanyName,
+      welcomeMessage: sessionStorage.welcomeMessage,
       //display wizard
     };
   } else {
@@ -32,9 +33,16 @@ export async function userInformation() {
   }
 }
 
-export async function changeInformation(phoneCode, phoneNumber) {
+export async function changeInformation(
+  names,
+  surName,
+  phoneCode,
+  phoneNumber
+) {
   const url = authApiUrl + "/api/General/ChangeInformation";
   const body = {
+    names: names,
+    surName: surName,
     PhoneCode: phoneCode,
     PhoneNumber: phoneNumber,
   };
@@ -47,11 +55,13 @@ export async function changeInformation(phoneCode, phoneNumber) {
       if (response.status === 200) {
         sessionStorage.setItem("countryCode", phoneCode);
         sessionStorage.setItem("phone", phoneNumber);
+        sessionStorage.setItem("names", names);
+        sessionStorage.setItem("surName", surName);
       }
       return response;
     })
     .catch(function (error) {
-      return error;
+      return error.response;
     });
 }
 

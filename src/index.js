@@ -10,6 +10,8 @@ import Profile from "./profile";
 import Pending from "./pending";
 import Completed from "./completed";
 import ChangePassword from "./changePassword";
+import ForgotPassword from "./forgotPassword";
+import ForgotPasswordTwoFa from "./forgotPasswordTwoFa";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -18,6 +20,8 @@ root.render(
     <Routes>
       <Route path="login" element={<Login />} />
       <Route path="twofa" element={<Twofa />} />
+      <Route path="forgotPassword" element={<ForgotPassword />} />
+      <Route path="forgotPasswordTwoFa" element={<ForgotPasswordTwoFa />} />
       <Route path="/" element={<App />}>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="profile" element={<Profile />} />
