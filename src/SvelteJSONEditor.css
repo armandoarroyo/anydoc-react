@@ -1,0 +1,18 @@
+.svelte-jsoneditor-react {
+  display: flex;
+  flex: 1;
+  width: 600px;
+  height: 550px;
+}
+
+.my-json-editor {
+  /* define a custom theme color */
+  --jse-theme-color: #383e42;
+  --jse-theme-color-highlight: #687177;
+  --jse-value-color: #088bd2;
+  --jse-value-color-number: #088bd2;
+  --jse-value-color-boolean: #088bd2;
+  --jse-value-color-null: #088bd2;
+  --jse-value-color-string: #088bd2;
+  --jse-value-color-url: #088bd2;
+}

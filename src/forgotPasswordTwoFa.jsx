@@ -134,35 +134,34 @@ function ForgotPasswordTwoFa() {
       <Box sx={{ width: "100%" }}>
         <Grid
           container
-          rowSpacing={5}
+          rowSpacing={4}
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           alignItems="center"
           justifyContent="center"
           direction="column"
           style={{ minHeight: "100vh" }}
         >
-          <Grid item>
+          <Grid item xs={12}>
             <h2 style={{ textAlign: "center" }}>Forgot Password</h2>
-            <p>
+            <p style={{ textAlign: "center", padding: "15px" }}>
               Please enter your new password and the validation code sent to
               your email.
             </p>
-          </Grid>
-          <Grid item xs={12}>
-            <h3 style={{ textAlign: "center" }}>Change your password </h3>
-
-            <Typography variant="caption" display="block">
-              At least one digit [0-9]
-            </Typography>
-            <Typography variant="caption" display="block">
-              At least one lowercase character [a-z]
-            </Typography>
-            <Typography variant="caption" display="block">
-              At least one uppercase character [A-Z]
-            </Typography>
-            <Typography variant="caption" display="block">
-              At least 8 characters
-            </Typography>
+            <h5 style={{ textAlign: "center" }}>Change your password </h5>
+            <Grid item xs={12} style={{ textAlign: "center" }}>
+              <Typography variant="caption" display="block">
+                At least one digit [0-9]
+              </Typography>
+              <Typography variant="caption" display="block">
+                At least one lowercase character [a-z]
+              </Typography>
+              <Typography variant="caption" display="block">
+                At least one uppercase character [A-Z]
+              </Typography>
+              <Typography variant="caption" display="block">
+                At least 8 characters
+              </Typography>
+            </Grid>
           </Grid>
 
           <Grid item xs={12} alignItems="center" justifyContent="center">

@@ -1,10 +1,14 @@
 body {
   --background-color: #e5e5ea;
-  background-color: #fff;
+  background-color: #f2f2f9;
   font-family: "Roboto Condensed";
 }
 .main-btn {
   position: fixed;
   bottom: 50px;
   right: 50px;
+}
+
+.document-photo {
+  max-height: 500px;
 }

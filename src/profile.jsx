@@ -120,19 +120,14 @@ function Profile() {
   return (
     <Grid
       container
-      spacing={0}
+      spacing={1}
       direction="column"
       alignItems="center"
       justifyContent="center"
       style={{ minHeight: "90vh" }}
     >
-      <Grid item xs={6}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-        >
+      <Grid item md={6} xs={12}>
+        <Box component="form" noValidate autoComplete="off">
           <div>
             <Grid
               container
@@ -141,10 +136,10 @@ function Profile() {
               justifyContent="center"
               style={{ maxWidth: "600px" }}
             >
-              <Grid item xs={12}>
+              <Grid item xs={12} textAlign="center">
                 <h3>Update your profile information: </h3>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12} textAlign="center">
                 <FormControl>
                   <TextField
                     disabled={disableInput}
@@ -164,7 +159,7 @@ function Profile() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12} textAlign="center">
                 <FormControl>
                   <TextField
                     disabled={disableInput}
@@ -184,7 +179,7 @@ function Profile() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12} textAlign="center">
                 <FormControl fullWidth>
                   <InputLabel color="info" id="countryCodeL">
                     Country Code
@@ -212,7 +207,7 @@ function Profile() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12} textAlign="center">
                 <FormControl>
                   <TextField
                     required
@@ -232,7 +227,7 @@ function Profile() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12} textAlign="center">
                 <FormControl>
                   <TextField
                     disabled
@@ -244,7 +239,7 @@ function Profile() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12} textAlign="center">
                 <FormControl>
                   <TextField
                     disabled
@@ -256,7 +251,7 @@ function Profile() {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item md={6} xs={12} textAlign="center">
                 <FormControl>
                   <TextField
                     required
@@ -269,7 +264,7 @@ function Profile() {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} textAlign="center">
                 <FormControl>
                   <FormControlLabel
                     label="Show welcome message"

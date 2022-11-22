@@ -1,7 +1,5 @@
-import { CollectionsOutlined } from "@mui/icons-material";
 import axios from "axios";
-import { authHeader } from "./localServices";
-
+import { getUserInfo } from "./localServices";
 const authApiUrl =
   "https://pad2zt6ubf.execute-api.us-east-1.amazonaws.com/Prod";
 
@@ -36,6 +34,25 @@ export async function sms() {
       return error;
     });
 }
+export async function RefreshToken() {
+  return await axios
+    .post(authApiUrl + "/api/Auth/RefreshToken", {
+      UserName: sessionStorage.user,
+      RefreshToken: sessionStorage.refresh_Token,
+    })
+    .then(function (response) {
+      console.log(response.data);
+      if (response.status === 200) {
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("access_token", response.data.access_Token);
+        sessionStorage.setItem("refresh_token", response.data.refreshToken);
+      }
+      return response;
+    })
+    .catch(function (error) {
+      return error;
+    });
+}
 
 export async function verifyCodeSMS(code) {
   return await axios
@@ -48,36 +65,8 @@ export async function verifyCodeSMS(code) {
       if (response.status === 200) {
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("access_token", response.data.access_Token);
-      }
-      return response;
-    })
-    .catch(function (error) {
-      return error;
-    });
-}
-
-export async function getUserInfo() {
-  return await axios
-    .get(authApiUrl + "/api/General/UserInfo", {
-      headers: {
-        Authorization: "Bearer " + sessionStorage.token,
-      },
-    })
-    .then(function (response) {
-      if (response.status === 200) {
-        sessionStorage.setItem("names", response.data.names);
-        sessionStorage.setItem("surNames", response.data.surNames);
-        sessionStorage.setItem("UserName", response.data.userName);
-        sessionStorage.setItem("email", response.data.email);
-        sessionStorage.setItem("countryCode", response.data.countryCode);
-        sessionStorage.setItem("phone", response.data.phone);
-        sessionStorage.setItem("companyId", response.data.companyId);
-        sessionStorage.setItem("company", response.data.company);
-        sessionStorage.setItem(
-          "roleCompanyName",
-          response.data.roleCompanyName
-        );
-        sessionStorage.setItem("welcomeMessage", response.data.welcomeMessage);
+        sessionStorage.setItem("refresh_token", response.data.refreshToken);
+        sessionStorage.setItem("expires_in", response.data.expiresIn);
       }
       return response;
     })

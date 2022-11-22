@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { forgotPassword } from "./api/auth";
+import { Typography } from "@mui/material";
 
 function ForgotPassword() {
   const [disableButton, setDisableButton] = useState(true);
@@ -88,12 +89,15 @@ function ForgotPassword() {
           direction="column"
           style={{ minHeight: "100vh" }}
         >
-          <Grid item>
+          <Grid item xs={12}>
             <h2 style={{ textAlign: "center" }}>Forgot Password</h2>
-            <p>
+            <Typography
+              variant="body1"
+              style={{ textAlign: "center", padding: "15px" }}
+            >
               Please enter your email address and a validation code will be sent
               to you.
-            </p>
+            </Typography>
           </Grid>
 
           <Grid item xs={12}>

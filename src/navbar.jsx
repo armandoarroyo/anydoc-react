@@ -9,7 +9,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import List from "@mui/material/List";
@@ -21,7 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import TaskIcon from "@mui/icons-material/Task";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import { state, setState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { logout } from "./api/auth";
@@ -30,6 +30,7 @@ export default function MenuAppBar() {
   let navigate = useNavigate();
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [subtitle, setsubtitle] = React.useState("Dashboard");
 
   const handleChange = (event) => {
     logout();
@@ -44,10 +45,12 @@ export default function MenuAppBar() {
     setAnchorEl(null);
   };
   const handleProfile = () => {
+    setsubtitle("Profile");
     navigate("/profile");
     setAnchorEl(null);
   };
   const [open, setOpen] = React.useState(false);
+
   const toggleDrawer = (anchor, open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -55,8 +58,7 @@ export default function MenuAppBar() {
     ) {
       return;
     }
-
-    setState({ ...state, [anchor]: open });
+    setOpen(false);
   };
 
   const list = (anchor) => (
@@ -82,7 +84,10 @@ export default function MenuAppBar() {
       <List>
         <ListItem disablePadding>
           <ListItemButton
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              setsubtitle("Dashboard");
+            }}
             component={Link}
             to="/dashboard"
           >
@@ -94,7 +99,10 @@ export default function MenuAppBar() {
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              setsubtitle("Pending Documents");
+            }}
             component={Link}
             to="/pending"
           >
@@ -106,7 +114,10 @@ export default function MenuAppBar() {
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              setsubtitle("Completed Documents");
+            }}
             component={Link}
             to="/completed"
           >
@@ -134,21 +145,36 @@ export default function MenuAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h4"
+            component="div"
+            sx={{ flexGrow: 1 }}
+            display="inline"
+          >
             AnyDoc
           </Typography>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, ml: 1 }}
+            display="inline"
+            color="gray"
+          ></Typography>
+
           {auth && (
             <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="secondary"
-              >
-                <AccountCircle />
-              </IconButton>
+              <Tooltip arrow title="Account">
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="secondary"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Tooltip>
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
